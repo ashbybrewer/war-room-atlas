@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The War Room Atlas — Interactive Histories &amp; Data Atlases</title>
+<meta name="description" content="Eighteen instruments for reading power: empires, wars, cities, and peoples rendered as explorable data. Designed and directed by William; built in collaboration with AI." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Oswald:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #0b0f1a;
+    --panel: #10172a;
+    --line: #1f2a44;
+    --red: #d64541;
+    --brass: #f1d9a0;
+    --ink: #b9c2d6;
+    --ink-dim: #6e7a93;
+    --jade: #5fa37c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--ink);
+    font-family: "Spectral", Georgia, serif;
+    line-height: 1.55;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- masthead ---------- */
+  header { padding: 64px 0 36px; }
+  .kicker {
+    font-family: "Oswald", sans-serif;
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: "Cinzel", serif;
+    font-weight: 900;
+    font-size: clamp(2.1rem, 6.5vw, 4rem);
+    line-height: 1.05;
+    color: var(--brass);
+    margin: 0 0 16px;
+    letter-spacing: 0.02em;
+  }
+  .deck {
+    font-family: "Spectral", serif;
+    font-weight: 300;
+    font-size: 1.08rem;
+    color: var(--ink);
+    max-width: 64ch;
+    margin: 0 0 14px;
+  }
+  .byline {
+    font-family: "Spectral", serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .byline b { font-style: normal; font-weight: 600; color: var(--brass); }
+  .rule {
+    height: 2px;
+    background: linear-gradient(90deg, var(--red), rgba(214,69,65,0));
+    margin: 36px 0 0;
+  }
+
+  /* ---------- sections ---------- */
+  section { padding: 44px 0 6px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+  .sec-head h2 {
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
+    font-size: 0.92rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0;
+    white-space: nowrap;
+  }
+  .sec-head .tail { flex: 1; height: 1px; background: var(--line); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+
+  /* ---------- cards ---------- */
+  .card {
+    display: block;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 18px 18px 16px;
+    position: relative;
+    transition: border-color 0.18s ease, transform 0.18s ease;
+  }
+  .card.live:hover { border-color: var(--brass); transform: translateY(-2px); }
+  .card.live { cursor: pointer; }
+  .card.pending { opacity: 0.8; }
+  .card .span {
+    font-family: "Oswald", sans-serif;
+    font-weight: 400;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin: 0 0 8px;
+  }
+  .card h3 {
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    font-size: 1.08rem;
+    line-height: 1.25;
+    color: var(--brass);
+    margin: 0 0 8px;
+  }
+  .card p {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--ink);
+    margin: 0 0 10px;
+  }
+  .craft {
+    font-family: "Oswald", sans-serif;
+    font-weight: 300;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 32px;
+  }
+  .badge {
+    position: absolute;
+    left: 18px;
+    bottom: 14px;
+    font-family: "Oswald", sans-serif;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+  }
+  .card.live .badge { border-color: var(--red); color: #fff; background: var(--red); }
+  .card.dev .badge { border-color: var(--brass); color: var(--brass); }
+
+  /* ---------- creed strip ---------- */
+  .creed {
+    margin-top: 56px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 22px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+  }
+  .creed div { flex: 1 1 260px; }
+  .creed b {
+    display: block;
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--brass);
+    margin-bottom: 5px;
+  }
+  .creed span { font-size: 0.85rem; font-weight: 300; }
+
+  /* ---------- footer ---------- */
+  footer { padding: 28px 0 56px; }
+  .fineprint {
+    font-family: "Oswald", sans-serif;
+    font-weight: 300;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Interactive Histories &middot; Data Atlases &middot; War-Room Cartography</p>
+    <h1>The War Room Atlas</h1>
+    <p class="deck">Eighteen instruments for reading power: empires rising, crowns waning, cities filling and emptying, peoples on the move — centuries made scrubbable, built from archival and census data, with every number labeled for exactly what it is.</p>
+    <p class="byline">Designed and directed by <b>William Brewer</b> — Nashville, Tennessee. Built in collaboration with AI: the research, historical judgment, and product direction are mine; the framing says so honestly.</p>
+    <div class="rule"></div>
+  </header>
+
+  <section>
+    <div class="sec-head"><h2>I &middot; Empires &amp; Crowns</h2><div class="tail"></div></div>
+    <div class="grid">
+      <a class="card pending" data-work="empire-sun-never-set">
+        <p class="span">1066 — 1997</p>
+        <h3>The Empire on Which the Sun Never Set</h3>
+        <p>Nine centuries of British power — acquisition, apogee, and the forty-year dissolution — territory, trade, and subjects under one slider.</p>
+        <p class="craft">Archival series &middot; World geometry &middot; Era engine</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="waning-of-the-crown">
+        <p class="span">1087 — 2025</p>
+        <h3>The Waning of the Crown</h3>
+        <p>From the Conqueror's writ to the constitutional present: a 938-year decay curve of real royal power, charted event by event.</p>
+        <p class="craft">Constitutional record &middot; Power index &middot; Reign dossiers</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="stalins-terror">
+        <p class="span">1936 — 1953</p>
+        <h3>Stalin's Terror</h3>
+        <p>The purge years in oxblood and gold — NKVD archival arrest and execution figures, rendered wave by wave in a constructivist system.</p>
+        <p class="craft">NKVD archives &middot; Constructivist grid &middot; Wave annotations</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="emptying-of-rome">
+        <p class="span">AD 100 — 600</p>
+        <h3>The Emptying of Rome</h3>
+        <p>A million souls down to a town of thousands: the ancient world's greatest city draining across five centuries of plague, sack, and severed grain.</p>
+        <p class="craft">Ancient proxies, labeled &middot; Supply linkage &middot; Event flags</p>
+        <span class="badge">In transit</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>II &middot; The World War</h2><div class="tail"></div></div>
+    <div class="grid">
+      <a class="card pending" data-work="third-reich-rise-and-fall">
+        <p class="span">1933 — 1945</p>
+        <h3>The Third Reich: Rise and Fall</h3>
+        <p>Twelve years from seizure to ruin — production, fronts, and the cold arithmetic of defeat.</p>
+        <p class="craft">Harrison GDP data &middot; Front tracking &middot; Initiative index</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="germanys-initiative">
+        <p class="span">Nov 1942 — Feb 1943</p>
+        <h3>What Destroyed Germany's Initiative</h3>
+        <p>Stalingrad as a war diary: twenty-two dated entries from encirclement to capitulation, with the airlift ledger that decided it.</p>
+        <p class="craft">Day-by-day diary &middot; Airlift ledger &middot; Drill-down</p>
+        <span class="badge">In transit</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>III &middot; The American Ground</h2><div class="tail"></div></div>
+    <div class="grid">
+      <a class="card pending" data-work="great-migration">
+        <p class="span">1910 — 1970</p>
+        <h3>The Great Migration</h3>
+        <p>Six million northbound: the Black South dot by dot &mdash; one per 10,000 people from state census tables &mdash; streaming along the rails into the arrival constellations, events marked from Tulsa to the Harlem Renaissance.</p>
+        <p class="craft">WP56 state census series &middot; Population dot field &middot; Event cartography</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="peopling-of-america">
+        <p class="span">1790 — 2020</p>
+        <h3>The Peopling of America</h3>
+        <p>Three thousand counties of real census data: who lived where across the whole republic, one dot at a time.</p>
+        <p class="craft">Census county data &middot; Dot atlas &middot; Growth curves</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="commercial-partition">
+        <p class="span">1800 — 2020</p>
+        <h3>The Commercial Partition of the United States</h3>
+        <p>A gravity model carves the republic into metro city-states — spheres, satellites, and tribute across two centuries.</p>
+        <p class="craft">Gravity model &middot; Metro populations &middot; Satellite dossiers</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="the-great-inversion">
+        <p class="span">1900 — 2025</p>
+        <h3>The Great Inversion</h3>
+        <p>How a machine for cooling air picked up the American population and moved it south — AC adoption against census flow, franchise moves included.</p>
+        <p class="craft">Census series &middot; AC penetration &middot; Sunbelt mechanism</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="making-of-music-city">
+        <p class="span">1779 — 2026</p>
+        <h3>The Making of Music City</h3>
+        <p>Nashville from Fort Nashborough to the boom — first volume of the Cumberland Series.</p>
+        <p class="craft">Cumberland series &middot; Regional atlas &middot; Era engine</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="frontier-atlas">
+        <p class="span">1769 — 1860</p>
+        <h3>The Tennessee–Kentucky Frontier</h3>
+        <p>Two hundred fifteen counties at their true founding dates, eighteen forts, and the roads through the Gap that filled them.</p>
+        <p class="craft">County founding record &middot; Migration routes &middot; Census curves</p>
+        <span class="badge">In transit</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>IV &middot; City Biographies</h2><div class="tail"></div></div>
+    <div class="grid">
+      <a class="card pending" data-work="making-of-london">
+        <p class="span">1600 — 2024</p>
+        <h3>The Making of London</h3>
+        <p>Port becomes counting-house: four centuries of inversion, with a Booth-palette poverty map and a demographic lens.</p>
+        <p class="craft">Booth palette &middot; Dock-to-finance inversion &middot; Demography</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="hollowing-of-detroit">
+        <p class="span">1900 — 2025</p>
+        <h3>The Hollowing of Detroit</h3>
+        <p>1.85 million at the 1950 peak down to 630,000 — arsenal, exodus, and the unmaking of an American boomtown.</p>
+        <p class="craft">Census record &middot; Industrial ledger &middot; Block decay</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card dev" data-fixed="1">
+        <p class="span">Founding — 2035</p>
+        <h3>The American Metropolis</h3>
+        <p>Every major city, neighborhood by neighborhood — demography, home values, amenities, and a forecast layer with honest confidence intervals.</p>
+        <p class="craft">NHGIS tracts &middot; MapLibre + PMTiles &middot; Forecast fans</p>
+        <span class="badge">In development</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>V &middot; Playable Histories</h2><div class="tail"></div></div>
+    <div class="grid">
+      <a class="card pending" data-work="the-map-table">
+        <p class="span">1940 — 1945</p>
+        <h3>The Map Table</h3>
+        <p>A first-person seat at the German situation conferences — an anti-Hitler study of an irrational command structure, with lethal moments and divergence branches.</p>
+        <p class="craft">Historical sourcing &middot; Branch engine &middot; 3D staging</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card dev" data-fixed="1">
+        <p class="span">AD 79</p>
+        <h3>Pompeii: The Final Moments</h3>
+        <p>A browser JRPG set in the last hours under Vesuvius — historical empathy as game design.</p>
+        <p class="craft">Narrative engine &middot; Period detail &middot; Empathy thesis</p>
+        <span class="badge">In development</span>
+      </a>
+      <a class="card pending" data-work="sic-semper">
+        <p class="span">April 1865</p>
+        <h3>Sic Semper — An Alternate History</h3>
+        <p>The closing of John Wilkes Booth&rsquo;s mind, structured like the tragedies he performed — record and counterfactual kept visibly apart.</p>
+        <p class="craft">Branch narrative &middot; Historical record &middot; Manhunt cartography</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="grofaz">
+        <p class="span">1936 — 1945</p>
+        <h3>GR&Ouml;FAZ</h3>
+        <p>Seventeen conferences, five acts, thirteen endings: a cult of personality consuming a state, played from inside the room. Anti-glorification by design.</p>
+        <p class="craft">Conference record &middot; Sycophancy mechanics &middot; Collapse sequence</p>
+        <span class="badge">In transit</span>
+      </a>
+      <a class="card pending" data-work="gettysburg-total-war">
+        <p class="span">July 1863</p>
+        <h3>Gettysburg: Total War</h3>
+        <p>Three nested tiers — war, campaign, battle — with a modeled win-probability bar and counterfactual toggles. The chassis slated to carry a full WWII treatment.</p>
+        <p class="craft">Three-tier engine &middot; Modeled retrodiction &middot; Counterfactuals</p>
+        <span class="badge">In transit</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="creed">
+    <div><b>Sourced / Modeled</b><span>Archival and census-derived figures carry SOURCED; constructed indices, interpolations, and forecasts carry MODELED. The line is never blurred.</span></div>
+    <div><b>Real Geometry</b><span>Natural Earth, Census TIGER, and us-atlas boundaries, properly projected — never schematic blobs.</span></div>
+    <div><b>Single-File Instruments</b><span>Each work is one self-contained HTML file. No servers, no keys, no dependencies — it runs anywhere, forever.</span></div>
+  </div>
+
+  <footer>
+    <p class="fineprint">The War Room Atlas &middot; Nashville, TN &middot; MMXXVI</p>
+  </footer>
+
+</div>
+
+<script>
+  // Dispatch board: each card checks the repo for its built file and flips
+  // itself LIVE when works/<slug>.html exists.
+  document.querySelectorAll(".card[data-work]").forEach(async (card) => {
+    const slug = card.dataset.work;
+    const url = "/" + slug + "/";
+    try {
+      const res = await fetch(url, { method: "HEAD" });
+      if (res.ok) {
+        card.classList.remove("pending");
+        card.classList.add("live");
+        card.href = url;
+        card.querySelector(".badge").textContent = "Live";
+      }
+    } catch (e) { /* file:// or offline — stays in transit */ }
+  });
+</script>
+
+</body>
+</html>
