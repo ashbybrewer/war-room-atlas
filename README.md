@@ -24,8 +24,8 @@ Empires rising, crowns waning, cities filling and emptying, armies breaking, peo
 | III · The American Ground | The Tennessee–Kentucky Frontier | 1769–1860 | [frontier-atlas](https://github.com/ashbybrewer/frontier-atlas) |
 | IV · City Biographies | The Making of London | 1600–2024 | [making-of-london](https://github.com/ashbybrewer/making-of-london) |
 | IV · City Biographies | The Hollowing of Detroit | 1900–2025 | [hollowing-of-detroit](https://github.com/ashbybrewer/hollowing-of-detroit) |
-| V · Playable Histories | The Map Table | 1940–1945 | [the-map-table](https://github.com/ashbybrewer/the-map-table) |
-| V · Playable Histories | GRÖFAZ | 1936–1945 | [grofaz](https://github.com/ashbybrewer/grofaz) |
+| V · Playable Histories | The Map Table | 1940–1945 | *in transit* |
+| V · Playable Histories | GRÖFAZ | 1936–1945 | *in transit* |
 | V · Playable Histories | Sic Semper | April 1865 | [sic-semper](https://github.com/ashbybrewer/sic-semper) |
 | V · Playable Histories | Gettysburg: Total War | July 1863 | [gettysburg-total-war](https://github.com/ashbybrewer/gettysburg-total-war) |
 
